@@ -73,7 +73,7 @@ Performer ExtractPerformer(string chunk)
         }
 
         string drillCoords = string.Join(" ", parts.Skip(whereDoesDrillStartFrom).SkipLast(whereDoesDrillEnd));
-        (currentSet.rawCoordsX, currentSet.rawCoordsY) = ExtractCoords(drillCoords);
+        (currentSet.rawCoordsX, currentSet.rawCoordsY, _, _) = ExtractCoords(drillCoords);
 
         performer.Sets.Add(currentSet);
     }
@@ -81,14 +81,14 @@ Performer ExtractPerformer(string chunk)
     return performer;
 }
 
-(string x, string y) ExtractCoords(string drillCoords)
+(string x, string y, decimal? x1, decimal? y1) ExtractCoords(string drillCoords)
 {
     if(drillCoords == "You don't stop on this subset")
     {
-        return (null, null);
+        return (null, null, null, null);
     }
 
-    Regex regex = new("(On 50)|((\\d*\\.\\d* (Inside|Outside)|On) \\d* Stage (Left|Right))");
+    Regex regex = new("(((?:(?:\\d*\\.\\d* (?:Inside|Outside))|On) \\d*) ?(Stage (?:Left|Right))?)");
     var match = regex.Match(drillCoords);
 
     if (!match.Success)
@@ -98,8 +98,44 @@ Performer ExtractPerformer(string chunk)
 
     string x = match.Value;
     string y = drillCoords.Replace(x, "").Trim();
+    decimal xPos = CalculateXPos(match);
 
-    return (x, y);
+    return (x, y, xPos, null);
+}
+
+decimal CalculateXPos(Match match)
+{
+    string[] coords = match.Groups[2].Value.Split(" ");
+    string staging = match.Groups[3].Value;
+
+    int multiplier = 0;
+    int marker = 0;
+    decimal steps = 0;
+    if(staging == "Stage Left")
+    {
+        multiplier = -1;
+    } else if(staging == "Stage Right")
+    {
+        multiplier = 1;
+    } else
+    {
+        //on 50
+        multiplier = 0;
+    }
+
+    if (coords[0] == "On")
+    {
+        marker = int.Parse(coords[1]); //On 50
+    } else
+    {
+        marker = int.Parse(coords[2]); //xx outside 50
+        steps = decimal.Parse(coords[0]) * (coords[1] == "Outside" ? 1 : -1);
+    }
+
+    marker = Math.Abs(50 - marker); //calc distance from 50: 40 = 10, 30 = 20, etc 
+    steps += (marker * 8); //coordinate system sees 8 paces inbetween each marker
+
+    return steps * multiplier;
 }
 
 string text = ExtractText("sample-drill.pdf");
