@@ -201,6 +201,7 @@ foreach (string chunk in performerChunks)
 }
 
 Console.WriteLine($"Found {performers.Count} performers");
+Pen pen = new(Color.FromArgb(130, 160, 160, 160), 5);
 foreach (Performer performer in performers)
 {
     Bitmap bmp = new(1600, 906);
@@ -222,6 +223,9 @@ foreach (Performer performer in performers)
         graphics.FillEllipse(Brushes.White, 797, 48 + j, 10, 10);
     }
 
+    int? lastX = null;
+    int? lastY = null;
+
     Console.WriteLine($"Performer {performer.Name} ({performer.Label})");
     foreach (DrillSet set in performer.Sets)
     {
@@ -235,7 +239,18 @@ foreach (Performer performer in performers)
 
         if (set.X != null && set.Y != null)
         {
-            graphics.FillEllipse(Brushes.Black, 800 + ((int)set.X * 10) - 3, 53 + ((int)set.Y * 10) - 3, 10, 10);
+            int x = 800 + ((int)set.X * 10);
+            int y = 53 + ((int)set.Y * 10);
+
+            if (lastX != null && lastY != null)
+            {
+                graphics.DrawLine(pen, lastX.Value, lastY.Value, x, y);
+            }
+
+            graphics.FillEllipse(Brushes.Black, x - 3, y - 3, 10, 10);
+
+            lastX = x;
+            lastY = y;
         }
     }
 
