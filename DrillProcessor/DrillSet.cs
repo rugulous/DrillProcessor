@@ -8,5 +8,7 @@
         public int? CountsToNextSet { get; set; }
         public string rawCoordsX { get; set; }
         public string rawCoordsY { get; set; }
+        public decimal? X { get; set; }
+        public decimal? Y { get; set; }
     }
 }

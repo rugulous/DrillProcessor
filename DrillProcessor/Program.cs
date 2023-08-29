@@ -4,6 +4,8 @@ using iText.Kernel.Pdf.Canvas.Parser;
 using System.Text;
 using System.Text.RegularExpressions;
 
+const decimal PACES_TO_YARDS = 1.875M;
+
 string ExtractText(string file)
 {
     StringBuilder drillBuilder = new();
@@ -73,7 +75,7 @@ Performer ExtractPerformer(string chunk)
         }
 
         string drillCoords = string.Join(" ", parts.Skip(whereDoesDrillStartFrom).SkipLast(whereDoesDrillEnd));
-        (currentSet.rawCoordsX, currentSet.rawCoordsY, _, _) = ExtractCoords(drillCoords);
+        (currentSet.rawCoordsX, currentSet.rawCoordsY, currentSet.X, currentSet.Y) = ExtractCoords(drillCoords);
 
         performer.Sets.Add(currentSet);
     }
@@ -99,8 +101,9 @@ Performer ExtractPerformer(string chunk)
     string x = match.Value;
     string y = drillCoords.Replace(x, "").Trim();
     decimal xPos = CalculateXPos(match);
+    decimal yPos = CalculateYPos(y);
 
-    return (x, y, xPos, null);
+    return (x, y, xPos, yPos);
 }
 
 decimal CalculateXPos(Match match)
@@ -133,9 +136,51 @@ decimal CalculateXPos(Match match)
     }
 
     marker = Math.Abs(50 - marker); //calc distance from 50: 40 = 10, 30 = 20, etc 
-    steps += (marker * 8); //coordinate system sees 8 paces inbetween each marker
+    steps += marker * 8; //coordinate system sees 8 paces inbetween each marker
 
     return steps * multiplier;
+}
+
+decimal CalculateYPos(string coords)
+{
+    Dictionary<string, decimal> hashes = new()
+    {
+        {"Front Sideline", 0 },
+        {"Front Hash", 32 },
+        {"Back Hash", 53.33333M } //blurgh
+    };
+
+    Regex regex = new("((?:(?:\\d.\\d* (?:In Front|Behind))|On) (.*))");
+    var match = regex.Match(coords);
+
+    if (!match.Success)
+    {
+        throw new Exception("How does front to back work?");
+    }
+
+    var position = match.Groups[1].Value;
+    var hash = match.Groups[2].Value;
+
+    if(!hashes.ContainsKey(hash))
+    {
+        throw new Exception($"Couldn't recognise hash {hash}");
+    }
+
+    decimal steps = hashes[hash];
+    if(!position.StartsWith("On"))
+    {
+        decimal posPart = decimal.Parse(coords.Split(" ")[0]);
+
+        if(position.Contains("In Front"))
+        {
+            steps -= posPart;
+        } else
+        {
+            steps += posPart;
+        }
+    }
+
+    return steps;
 }
 
 string text = ExtractText("sample-drill.pdf");
@@ -160,7 +205,7 @@ foreach(Performer performer in performers)
             Console.Write($" (Rehearsal Mark {set.RehearsalMark})");
         }
 
-        Console.WriteLine($": {set.rawCoordsX}, {set.rawCoordsY} with {set.CountsToNextSet} to move");
+        Console.WriteLine($": {set.rawCoordsX}, {set.rawCoordsY} with {set.CountsToNextSet} to move || {set.X}, {set.Y}");
     }
 
     Console.WriteLine();
