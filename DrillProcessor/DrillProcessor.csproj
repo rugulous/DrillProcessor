@@ -13,10 +13,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Mvt 2_DotSheets.pdf">
+    <None Update="Drill\P2.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="sample-drill.pdf">
+    <None Update="Drill\P1.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Drill\P3.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Drill\P4.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
