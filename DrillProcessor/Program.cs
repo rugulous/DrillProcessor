@@ -2,6 +2,7 @@
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using System.Drawing;
+using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -190,7 +191,12 @@ decimal CalculateYPos(string coords)
     return steps;
 }
 
-string text = ExtractText("sample-drill.pdf");
+int Scale(double num, int scale)
+{
+    return (int)(num * scale);
+}
+
+string text = ExtractText("Mvt 2_DotSheets.pdf");
 string[] performerChunks = text.Split("\nName:"); //first line begins with Name:, so this splits into performer chunks
 performerChunks[0] = performerChunks[0].Replace("Name:", "");
 
@@ -201,26 +207,37 @@ foreach (string chunk in performerChunks)
 }
 
 Console.WriteLine($"Found {performers.Count} performers");
-Pen pen = new(Color.FromArgb(130, 160, 160, 160), 5);
+int scale = 100;
+Pen pen = new(Color.FromArgb(130, 160, 160, 160), scale / 2);
 foreach (Performer performer in performers)
 {
-    Bitmap bmp = new(1600, 906);
+    int width = 160 * scale;
+    int height = Scale(90.6, scale);
+    int frontSideline = Scale(5.3, scale);
+
+    Bitmap bmp = new(width, height);
     Graphics graphics = Graphics.FromImage(bmp);
-    graphics.FillRectangle(Brushes.DarkGreen, 0, 0, 1600, 53);
-    graphics.FillRectangle(Brushes.Green, 0, 53, 1600, 853);
-    graphics.FillRectangle(Brushes.White, 0, 53, 1600, 1);
+    graphics.FillRectangle(Brushes.DarkGreen, 0, 0, width, frontSideline);
+    graphics.FillRectangle(Brushes.Green, 0, frontSideline, width, height - frontSideline);
+    graphics.FillRectangle(Brushes.White, 0, frontSideline, width, Scale(1, scale / 10));
 
     for (int i = 0; i <= 20; i++)
     {
-        graphics.FillRectangle(Brushes.White, i * 80, 53, (i == 10 ? 5 : 1), 853);
-        graphics.FillRectangle(Brushes.White, (i * 80) - 20, 373, 40, 1);
-        graphics.FillRectangle(Brushes.White, (i * 80) - 20, 586, 40, 1);
+        int hashPos = Scale((i * 8) - 2, scale);
+        graphics.FillRectangle(Brushes.White, Scale(i * 8, scale), frontSideline, Scale(i == 10 ? 5 : 1, scale / 10), height - frontSideline);
+        graphics.FillRectangle(Brushes.White, hashPos, Scale(37.3, scale), Scale(4, scale), Scale(1, scale / 10));
+        graphics.FillRectangle(Brushes.White, hashPos, Scale(58.6, scale), Scale(4, scale), Scale(1, scale / 10));
+
+        for(int j = 1; j < 8; j++)
+        {
+            graphics.FillRectangle(Brushes.White, Scale((i * 8) + j, scale), frontSideline, scale / 10, scale);
+        }
 
     }
 
-    for (int j = 0; j < 530; j += 80)
+    for (int j = 0; j < 53 * scale; j += 8 * scale)
     {
-        graphics.FillEllipse(Brushes.White, 797, 48 + j, 10, 10);
+        graphics.FillEllipse(Brushes.White, Scale(79.7, scale), Scale(4.8, scale) + j, scale, scale);
     }
 
     int? lastX = null;
@@ -239,15 +256,15 @@ foreach (Performer performer in performers)
 
         if (set.X != null && set.Y != null)
         {
-            int x = 800 + ((int)set.X * 10);
-            int y = 53 + ((int)set.Y * 10);
+            int x = Scale(80 + (double)set.X.Value, scale);
+            int y = frontSideline + Scale((double)set.Y, scale);
 
             if (lastX != null && lastY != null)
             {
                 graphics.DrawLine(pen, lastX.Value, lastY.Value, x, y);
             }
 
-            graphics.FillEllipse(Brushes.Black, x - 3, y - 3, 10, 10);
+            graphics.FillEllipse(Brushes.Black, x - (scale / 2), y - (scale / 2), scale, scale);
 
             lastX = x;
             lastY = y;
