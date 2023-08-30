@@ -23,3 +23,5 @@ dots?.Save("C:\\temp\\drill\\Matt.bmp");
 //        bmp?.Save($"C:\\temp\\drill\\{performer.Label}.bmp");
 //    }
 //}
+
+DotExporter.Export(opener.First(p => p.Label == "S2"), "C:\\temp\\drill\\matt.txt");
