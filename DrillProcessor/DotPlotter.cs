@@ -58,6 +58,9 @@ namespace DrillProcessor
                 DrawSet(drill, graphics);
             }
 
+            //Rotate 180 so it looks like drill books
+            bitmap.RotateFlip(RotateFlipType.Rotate180FlipNone);
+
             return bitmap;
         }
 

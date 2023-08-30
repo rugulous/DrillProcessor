@@ -22,6 +22,23 @@ namespace DrillProcessor
             return performers;
         }
 
+        public static List<Performer> Extract(string file, List<Performer> existingPerformers)
+        {
+            foreach(Performer performer in Extract(file))
+            {
+                Performer? match = existingPerformers.FirstOrDefault(p => p.Label == performer.Label);
+                if(match != null)
+                {
+                    match.Sets.AddRange(performer.Sets);
+                } else
+                {
+                    existingPerformers.Add(performer);
+                }
+            }
+
+            return existingPerformers;
+        }
+
         private static string ExtractText(string file)
         {
             StringBuilder drillBuilder = new();

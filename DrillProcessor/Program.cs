@@ -1,7 +1,8 @@
 ﻿using DrillProcessor;
 using System.Drawing;
 
-List<Performer> performers = DrillExtractor.Extract("Mvt 2_DotSheets.pdf");
+List<Performer> performers = DrillExtractor.Extract("sample-drill.pdf");
+performers = DrillExtractor.Extract("Mvt 2_DotSheets.pdf", performers);
 
 DotPlotter plotter = new(100);
 foreach (Performer performer in performers)
