@@ -17,7 +17,7 @@
                 foreach(DrillSet set in performer.Sets)
                 {
                     writer.WriteLine(set.Identifier);
-                    writer.WriteLine(set.CountsFromLastSet ?? 0);
+                    writer.WriteLine(set.CountsToNextSet ?? 0);
                     if(set.X == null || set.Y == null)
                     {
                         writer.WriteLine("-");
