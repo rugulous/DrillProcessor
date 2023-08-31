@@ -6,7 +6,7 @@ List<Performer> opener = DrillExtractor.Extract("Drill/P1.pdf");
 List<Performer> performers = DrillExtractor.Extract("Drill/P4.pdf", 
     DrillExtractor.Extract("Drill/P3.pdf", 
         DrillExtractor.Extract("Drill/P2.pdf", 
-            opener
+            DrillExtractor.Extract("Drill/P1.pdf")
         )
     )
 );
