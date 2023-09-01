@@ -3,14 +3,14 @@
     internal class Performer
     {
         public string Name { get; set; }
-        public string? Label { get; set; }
-        public List<DrillSet> Sets { get; set; }
+        public string? Symbol { get; set; }
+        public List<Dot> Dots { get; set; }
 
-        public Performer(string name, string? label = null)
+        public Performer(string name, string? symbol)
         {
             Name = name;
-            Label = label;
-            Sets = new();
+            Symbol = symbol;
+            Dots = new();
         }
     }
 }

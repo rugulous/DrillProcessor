@@ -41,7 +41,7 @@ namespace DrillProcessor
             }
         }
 
-        public Bitmap? PlotDots(Performer performer)
+        public Bitmap? PlotDots(RawPerformer performer)
         {
             if (!OperatingSystem.IsWindows() || Field == null)
             {

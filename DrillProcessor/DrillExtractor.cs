@@ -7,13 +7,13 @@ namespace DrillProcessor
 {
     internal static partial class DrillExtractor
     {
-        public static List<Performer> Extract(string file)
+        public static List<RawPerformer> Extract(string file)
         {
             string text = ExtractText(file);
             string[] performerChunks = text.Split("\nName:"); //first line begins with Name:, so this splits into performer chunks
             performerChunks[0] = performerChunks[0].Replace("Name:", "");
 
-            List<Performer> performers = new();
+            List<RawPerformer> performers = new();
             foreach (string chunk in performerChunks)
             {
                 performers.Add(ExtractPerformer(chunk));
@@ -22,11 +22,11 @@ namespace DrillProcessor
             return performers;
         }
 
-        public static List<Performer> Extract(string file, List<Performer> existingPerformers)
+        public static List<RawPerformer> Extract(string file, List<RawPerformer> existingPerformers)
         {
-            foreach(Performer performer in Extract(file))
+            foreach(RawPerformer performer in Extract(file))
             {
-                Performer? match = existingPerformers.FirstOrDefault(p => p.Label == performer.Label);
+                RawPerformer? match = existingPerformers.FirstOrDefault(p => p.Label == performer.Label);
                 if(match != null)
                 {
                     match.Sets.AddRange(performer.Sets);
@@ -54,10 +54,10 @@ namespace DrillProcessor
             return drillBuilder.ToString().Trim();
         }
 
-        private static Performer ExtractPerformer(string chunk)
+        private static RawPerformer ExtractPerformer(string chunk)
         {
             string[] lines = chunk.Split('\n');
-            Performer performer = new(lines[0].Trim(), lines[1].Replace("Label:", "").Trim());
+            RawPerformer performer = new(lines[0].Trim(), lines[1].Replace("Label:", "").Trim());
 
             for (int i = 4; i < lines.Length; i++)
             {
