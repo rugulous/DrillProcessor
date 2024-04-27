@@ -13,18 +13,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Drill\P2.pdf">
+    <None Update="Drill\2023\P2.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Drill\P1.pdf">
+    <None Update="Drill\2023\P1.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Drill\P3.pdf">
+    <None Update="Drill\2023\P3.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Drill\P4.pdf">
+    <None Update="Drill\2023\P4.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Drill\2024\" />
   </ItemGroup>
 
 </Project>
