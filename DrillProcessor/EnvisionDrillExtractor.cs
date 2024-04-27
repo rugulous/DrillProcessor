@@ -10,7 +10,7 @@ namespace DrillProcessor
     {
         public List<RawPerformer> Extract(string file)
         {
-            string text = ExtractText(file);
+            string text = Helpers.ExtractText(file);
             string[] performerChunks = text.Split("\nName:"); //first line begins with Name:, so this splits into performer chunks
             performerChunks[0] = performerChunks[0].Replace("Name:", "");
 
@@ -38,21 +38,6 @@ namespace DrillProcessor
             }
 
             return existingPerformers;
-        }
-
-        private static string ExtractText(string file)
-        {
-            StringBuilder drillBuilder = new();
-            PdfDocument pdf = new(new PdfReader(file));
-            for (int i = 1; i <= pdf.GetNumberOfPages(); i++)
-            {
-                var page = pdf.GetPage(i);
-                string text = PdfTextExtractor.GetTextFromPage(page);
-                drillBuilder.AppendLine(text);
-            }
-            pdf.Close();
-
-            return drillBuilder.ToString().Trim();
         }
 
         private static RawPerformer ExtractPerformer(string chunk)
