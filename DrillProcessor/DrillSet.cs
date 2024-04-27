@@ -1,6 +1,6 @@
 ﻿namespace DrillProcessor
 {
-    internal class DrillSet
+    public class DrillSet
     {
         public string Identifier { get; set; } = "";
         public string? RehearsalMark { get; set; }

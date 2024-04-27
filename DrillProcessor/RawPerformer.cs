@@ -1,6 +1,6 @@
 ﻿namespace DrillProcessor
 {
-    internal class RawPerformer
+    public class RawPerformer
     {
         public string Name { get; set; }
         public string? Label { get; set; }

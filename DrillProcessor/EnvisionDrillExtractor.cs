@@ -2,12 +2,13 @@
 using iText.Kernel.Pdf;
 using System.Text.RegularExpressions;
 using System.Text;
+using DrillProcessor.Interface;
 
 namespace DrillProcessor
 {
-    internal static partial class DrillExtractor
+    internal partial class EnvisionDrillExtractor : IDrillExtractor
     {
-        public static List<RawPerformer> Extract(string file)
+        public List<RawPerformer> Extract(string file)
         {
             string text = ExtractText(file);
             string[] performerChunks = text.Split("\nName:"); //first line begins with Name:, so this splits into performer chunks
@@ -22,7 +23,7 @@ namespace DrillProcessor
             return performers;
         }
 
-        public static List<RawPerformer> Extract(string file, List<RawPerformer> existingPerformers)
+        public List<RawPerformer> Extract(string file, List<RawPerformer> existingPerformers)
         {
             foreach(RawPerformer performer in Extract(file))
             {
