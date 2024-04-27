@@ -12,8 +12,7 @@ namespace DrillProcessor
     {
         public List<RawPerformer> Extract(string file)
         {
-            bool doubled = HasTwoPerPage(file);
-            string text = Helpers.ExtractText(file);
+            string text = Helpers.ExtractText(file, twoToAPage: HasTwoPerPage(file)); //hmm... maybe a callback here instead?
             Console.WriteLine(text);
 
             List<RawPerformer> performers = new List<RawPerformer>();

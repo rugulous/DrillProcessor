@@ -1,6 +1,9 @@
 ﻿using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
 using System.Text;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using iText.Kernel.Pdf.Canvas.Parser.Filter;
+using iText.Kernel.Geom;
 
 namespace DrillProcessor
 {
@@ -13,7 +16,7 @@ namespace DrillProcessor
 
         public static int Scale(double num, int scale)
         {
-            return (int) (num * scale);
+            return (int)(num * scale);
         }
 
         public static int Scale(int num, int scale)
@@ -21,12 +24,12 @@ namespace DrillProcessor
             return num * scale;
         }
 
-        public static string ExtractText(string file, int? pageLimit = null)
+        public static string ExtractText(string file, int? pageLimit = null, bool twoToAPage = false)
         {
             PdfDocument pdf = new(new PdfReader(file));
             int totalPages = pdf.GetNumberOfPages();
 
-            if(pageLimit == null || pageLimit > totalPages || pageLimit <= 0)
+            if (pageLimit == null || pageLimit > totalPages || pageLimit <= 0)
             {
                 pageLimit = totalPages;
             }
@@ -35,8 +38,28 @@ namespace DrillProcessor
             for (int i = 1; i <= pageLimit; i++)
             {
                 var page = pdf.GetPage(i);
-                string text = PdfTextExtractor.GetTextFromPage(page);
-                drillBuilder.AppendLine(text);
+
+                if (twoToAPage)
+                {
+                    Rectangle fullPage = page.GetMediaBox();
+                    float targetW = fullPage.GetWidth() / 2;
+                    float targetH = fullPage.GetHeight() / 2;
+
+                    for (int y = 0; y < 2; y++)
+                    {
+                        for (int x = 0; x < 2; x++)
+                        {
+                            Rectangle target = new(x * targetW, y * targetH, targetW, targetH);
+                            FilteredTextEventListener stratagem = new(new LocationTextExtractionStrategy(), new TextRegionEventFilter(target));
+                            drillBuilder.AppendLine(PdfTextExtractor.GetTextFromPage(page, stratagem));
+                        }
+                    }
+                }
+                else
+                {
+                    drillBuilder.AppendLine(PdfTextExtractor.GetTextFromPage(page));
+                }
+
             }
             pdf.Close();
 
