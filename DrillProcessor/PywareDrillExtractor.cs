@@ -102,8 +102,13 @@ namespace DrillProcessor
             int marker = int.Parse(match.Groups[4].Value);
 
             decimal steps;
-            if (!decimal.TryParse(match.Groups[2].Value, out steps))
+            if (decimal.TryParse(match.Groups[2].Value, out steps))
             {
+                if (match.Groups[3].Value == "inside")
+                {
+                    steps = -steps;
+                }
+            } else { 
                 steps = 0;
             }
 
