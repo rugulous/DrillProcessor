@@ -38,18 +38,25 @@ namespace DrillProcessor
             for (int i = 2; i < lines.Length - 1; i++) //last line is Page x of y
             {
                 string[] parts = lines[i].Split(" ");
-                if(parts.Length < 10)
+                if (parts.Length < 10)
                 {
                     continue;
                 }
 
-                int drillStartsFrom = 5;
+                int drillStartsFrom = 4; //sometimes an extra space is added for centering!
                 int counts;
 
-                if (!int.TryParse(parts[4], out counts))
+                if (!int.TryParse(parts[3], out counts))
                 {
-                    drillStartsFrom = 6; //sometimes an extra space is added for centering!
-                    counts = int.Parse(parts[5]);
+                    if (int.TryParse(parts[4], out counts))
+                    {
+                        drillStartsFrom = 5;
+                    }
+                    else
+                    {
+                        drillStartsFrom = 6;
+                        counts = int.Parse(parts[5]);
+                    }
                 }
 
                 DrillSet currentSet = new()
@@ -65,11 +72,18 @@ namespace DrillProcessor
                 performer.Sets.Add(currentSet);
             }
 
+            for(int i = 0; i < performer.Sets.Count - 1; i++)
+            {
+                performer.Sets[i].CountsToNextSet = performer.Sets[i + 1].CountsToNextSet;
+            }
+
+            performer.Sets[performer.Sets.Count - 1].CountsToNextSet = 0;
+
             return performer;
         }
 
         //unsure if Pyware can export one per page, but this check doesn't hurt anyone!
-        private bool HasTwoPerPage(string file) 
+        private bool HasTwoPerPage(string file)
         {
             string firstPage = Helpers.ExtractText(file, 1);
             return Regex.Matches(firstPage, "Performer:").Count > 1;
@@ -108,7 +122,9 @@ namespace DrillProcessor
                 {
                     steps = -steps;
                 }
-            } else { 
+            }
+            else
+            {
                 steps = 0;
             }
 
