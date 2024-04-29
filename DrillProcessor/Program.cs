@@ -2,7 +2,7 @@
 using DrillProcessor.Interface;
 using System.Drawing;
 
-string[] movements = { "P1" }; //, "P2", "P3", "P4" };
+string[] movements = { "P2" }; //, "P3", "P4" };
 
 IDrillExtractor extractor = new PywareDrillExtractor();
 
