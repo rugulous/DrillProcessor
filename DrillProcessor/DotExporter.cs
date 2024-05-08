@@ -18,31 +18,30 @@ namespace DrillProcessor
 
             Performance performance = TransformPerformers(performers);
 
-            using (StreamWriter writer = new(fileTo))
-            {
-                writer.WriteLine(performance.Title);
-                writer.WriteLine(performance.Bpm);
+            using StreamWriter writer = new(fileTo);
 
-                foreach (PerformanceSet set in performance.Sets)
+            writer.WriteLine(performance.Title);
+            writer.WriteLine(performance.Bpm);
+
+            foreach (PerformanceSet set in performance.Sets)
+            {
+                writer.WriteLine(set.Identifier);
+                writer.WriteLine(set.CountsToNextSet ?? 0);
+            }
+
+            writer.WriteLine(TERMINATOR);
+
+            foreach (Performer performer in performance.Performers)
+            {
+                writer.WriteLine(performer.Name);
+                writer.WriteLine(performer.Symbol);
+
+                foreach (Dot dot in performer.Dots)
                 {
-                    writer.WriteLine(set.Identifier);
-                    writer.WriteLine(set.CountsToNextSet ?? 0);
+                    writer.WriteLine($"{dot.X},{dot.Y}");
                 }
 
                 writer.WriteLine(TERMINATOR);
-
-                foreach (Performer performer in performance.Performers)
-                {
-                    writer.WriteLine(performer.Name);
-                    writer.WriteLine(performer.Symbol);
-
-                    foreach (Dot dot in performer.Dots)
-                    {
-                        writer.WriteLine($"{dot.X},{dot.Y}");
-                    }
-
-                    writer.WriteLine(TERMINATOR);
-                }
             }
         }
 
@@ -97,7 +96,6 @@ namespace DrillProcessor
                             //where's the next set?
                             subsetTotal += performer.Sets[i].CountsToNextSet ?? 0;
 
-
                             for (int j = i + 1; j < performer.Sets.Count; j++)
                             {
                                 subsetTotal += performer.Sets[j].CountsToNextSet ?? 0;
@@ -121,7 +119,6 @@ namespace DrillProcessor
                         }
 
                         decimal progress = (subsetProgress / subsetTotal);
-
 
                         dot = new()
                         {

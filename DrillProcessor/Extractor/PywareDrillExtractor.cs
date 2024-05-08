@@ -46,9 +46,8 @@ namespace DrillProcessor
                 }
 
                 int drillStartsFrom = 4; //sometimes an extra space is added for centering!
-                int counts;
 
-                if (!int.TryParse(parts[3], out counts))
+                if (!int.TryParse(parts[3], out int counts))
                 {
                     if (int.TryParse(parts[4], out counts))
                     {
@@ -67,7 +66,6 @@ namespace DrillProcessor
                     CountsToNextSet = counts
                 };
 
-
                 string drillCoords = string.Join(" ", parts[drillStartsFrom..parts.Length]);
                 (currentSet.RawCoordsX, currentSet.RawCoordsY, currentSet.X, currentSet.Y) = ExtractCoords(drillCoords);
 
@@ -79,18 +77,17 @@ namespace DrillProcessor
                 performer.Sets[i].CountsToNextSet = performer.Sets[i + 1].CountsToNextSet;
             }
 
-            performer.Sets[performer.Sets.Count - 1].CountsToNextSet = 0;
+            performer.Sets[^1].CountsToNextSet = 0;
 
             return performer;
         }
 
         //unsure if Pyware can export one per page, but this check doesn't hurt anyone!
-        private bool HasTwoPerPage(string file)
+        private static bool HasTwoPerPage(string file)
         {
             string firstPage = Helpers.ExtractText(file, 1);
-            return Regex.Matches(firstPage, "Performer:").Count > 1;
+            return firstPage.Split("Performer:").Length > 1;
         }
-
 
         static (string x, string y, decimal? x1, decimal? y1) ExtractCoords(string drillCoords)
         {
@@ -117,8 +114,7 @@ namespace DrillProcessor
             int multiplier;
             int marker = int.Parse(match.Groups[4].Value);
 
-            decimal steps;
-            if (decimal.TryParse(match.Groups[2].Value, out steps))
+            if (decimal.TryParse(match.Groups[2].Value, out decimal steps))
             {
                 if (match.Groups[3].Value == "inside")
                 {
@@ -170,12 +166,11 @@ namespace DrillProcessor
             var position = match.Groups[2].Value.ToLower(); // [1] steps [2] front/behind [3] home/visitor hash/sideline
             var hash = match.Groups[3].Value;
 
-            if (!hashes.ContainsKey(hash))
+            if (!hashes.TryGetValue(hash, out decimal steps))
             {
                 throw new DrillExtractionException($"Couldn't recognise hash {hash}");
             }
 
-            decimal steps = hashes[hash];
             if (position != "on")
             {
                 decimal posPart = decimal.Parse(match.Groups[1].Value);

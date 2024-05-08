@@ -59,7 +59,6 @@ namespace DrillProcessor
                 {
                     drillBuilder.AppendLine(PdfTextExtractor.GetTextFromPage(page));
                 }
-
             }
             pdf.Close();
 

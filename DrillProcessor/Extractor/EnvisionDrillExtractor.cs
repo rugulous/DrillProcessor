@@ -187,12 +187,11 @@ namespace DrillProcessor
             var position = match.Groups[1].Value;
             var hash = match.Groups[2].Value;
 
-            if (!hashes.ContainsKey(hash))
+            if (!hashes.TryGetValue(hash, out decimal steps))
             {
                 throw new DrillExtractionException($"Couldn't recognise hash {hash}");
             }
 
-            decimal steps = hashes[hash];
             if (!position.StartsWith("On"))
             {
                 decimal posPart = decimal.Parse(coords.Split(" ")[0]);
