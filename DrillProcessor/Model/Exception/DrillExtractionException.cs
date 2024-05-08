@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Reflection;
 
-namespace DrillProcessor
+namespace DrillProcessor.Model.Exception
 {
     [Serializable]
     public class DrillExtractionException : Exception

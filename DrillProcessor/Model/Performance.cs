@@ -1,4 +1,4 @@
-﻿namespace DrillProcessor
+﻿namespace DrillProcessor.Model
 {
     internal class Performance
     {

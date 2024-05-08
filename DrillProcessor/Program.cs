@@ -1,5 +1,6 @@
 ﻿using DrillProcessor;
 using DrillProcessor.Interface;
+using DrillProcessor.Model;
 using System.Drawing;
 
 string[] movements = { "P2" }; //, "P3", "P4" };

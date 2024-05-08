@@ -3,6 +3,7 @@ using iText.Kernel.Pdf;
 using System.Text.RegularExpressions;
 using System.Text;
 using DrillProcessor.Interface;
+using DrillProcessor.Model;
 
 namespace DrillProcessor
 {

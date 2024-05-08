@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using DrillProcessor.Model;
 
 namespace DrillProcessor
 {

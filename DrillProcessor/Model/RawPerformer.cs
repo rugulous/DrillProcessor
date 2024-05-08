@@ -1,4 +1,4 @@
-﻿namespace DrillProcessor
+﻿namespace DrillProcessor.Model
 {
     public class RawPerformer
     {

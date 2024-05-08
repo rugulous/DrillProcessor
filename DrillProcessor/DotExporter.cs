@@ -1,4 +1,6 @@
-﻿namespace DrillProcessor
+﻿using DrillProcessor.Model;
+
+namespace DrillProcessor
 {
     internal static class DotExporter
     {
