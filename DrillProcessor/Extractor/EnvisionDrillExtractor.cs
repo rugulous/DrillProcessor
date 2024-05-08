@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Text;
 using DrillProcessor.Interface;
 using DrillProcessor.Model;
+using DrillProcessor.Model.Exceptions;
 
 namespace DrillProcessor
 {

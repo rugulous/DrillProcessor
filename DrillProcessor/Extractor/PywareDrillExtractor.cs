@@ -1,5 +1,6 @@
 ﻿using DrillProcessor.Interface;
 using DrillProcessor.Model;
+using DrillProcessor.Model.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
