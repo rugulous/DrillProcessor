@@ -1,4 +1,5 @@
 ﻿using DrillProcessor.Model;
+using DrillProcessor.Model.Exceptions;
 
 namespace DrillProcessor
 {
@@ -76,7 +77,7 @@ namespace DrillProcessor
 
                 for (int i = 0; i < performer.Sets.Count; i++)
                 {
-                    Dot dot = null;
+                    Dot? dot = null;
                     if (performer.Sets[i].X == null || performer.Sets[i].Y == null)
                     {
                         //great, we're in a subset
@@ -107,6 +108,11 @@ namespace DrillProcessor
                                     Console.WriteLine($"Subset ends at {subsetEnd.Identifier} - {subsetTotal} counts later  - ({subsetEnd.X}, {subsetEnd.Y})");
                                     break;
                                 }
+                            }
+
+                            if (subsetEnd == null || subsetEnd.X == null || subsetEnd.Y == null)
+                            {
+                                throw new DrillExportException("Could not find end of subset!");
                             }
 
                             subsetProgress = performer.Sets[i].CountsFromLastSet ?? 0;

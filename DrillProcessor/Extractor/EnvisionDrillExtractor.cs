@@ -29,7 +29,7 @@ namespace DrillProcessor
         {
             foreach(RawPerformer performer in Extract(file))
             {
-                RawPerformer? match = existingPerformers.FirstOrDefault(p => p.Label == performer.Label);
+                RawPerformer? match = existingPerformers.Find(p => p.Label == performer.Label);
                 if(match != null)
                 {
                     match.Sets.AddRange(performer.Sets);
