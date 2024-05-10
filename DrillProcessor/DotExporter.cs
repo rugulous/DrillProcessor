@@ -7,7 +7,7 @@ namespace DrillProcessor
     {
         const string TERMINATOR = "-----";
 
-        public static void Export(List<RawPerformer> performers, string fileTo)
+        public static void Export(List<RawPerformer> performers, string fileTo, int bpm)
         {
             if (performers.Count == 0) return;
 
@@ -16,7 +16,7 @@ namespace DrillProcessor
                 File.Delete(fileTo);
             }
 
-            Performance performance = TransformPerformers(performers);
+            Performance performance = TransformPerformers(performers, bpm);
 
             using StreamWriter writer = new(fileTo);
 
@@ -45,9 +45,9 @@ namespace DrillProcessor
             }
         }
 
-        private static Performance TransformPerformers(List<RawPerformer> performers)
+        private static Performance TransformPerformers(List<RawPerformer> performers, int bpm)
         {
-            Performance performance = new("Test Drill", 180);
+            Performance performance = new("Test Drill", bpm);
 
             RawPerformer showTemplate = performers[0];
             foreach (DrillSet drillSet in showTemplate.Sets)
